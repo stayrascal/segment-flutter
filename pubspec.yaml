@@ -1,0 +1,32 @@
+name: segment_flutter
+description: A new flutter plugin project.
+version: 0.0.1
+homepage:
+repository: https://github.com/stayrascal/flutter-segment
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.20.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  meta: ^1.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.segment_flutter
+        pluginClass: SegmentFlutterPlugin
+      ios:
+        pluginClass: SegmentFlutterPlugin
+      web:
+        pluginClass: SegmentWeb
+        fileName: src/segment_web.dart
