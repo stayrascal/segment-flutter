@@ -1,6 +1,6 @@
-# segment_flutter_example
+# flutter_segment_example
 
-Demonstrates how to use the segment_flutter plugin.
+Demonstrates how to use the flutter_segment plugin.
 
 ## Getting Started
 

@@ -1,5 +1,8 @@
 # Segment plugin
-Copy from https://github.com/claimsforce-gmbh/flutter-segment
+Copy from https://github.com/claimsforce-gmbh/flutter-segment. Use for Self-learning.
+
+
+
 [![Pub Version](https://img.shields.io/pub/v/flutter_segment)](https://pub.dev/packages/flutter_segment)
 
 Flutter plugin to support iOS, Android and Web sources at https://segment.com.

@@ -1,58 +1,120 @@
-import 'package:flutter/material.dart';
-import 'dart:async';
+import 'dart:io';
 
-import 'package:flutter/services.dart';
-import 'package:segment_flutter/segment_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:segment_flutter/segment_flutter_test.dart';
 
 void main() {
+  /// Wait until the platform channel is properly initialized so we can call
+  /// `setContext` during the app initialization.
+  WidgetsFlutterBinding.ensureInitialized();
+
+  /// The `context.device.token` is a special property.
+  /// When you define it, setting the context again with no token property (ex: `{}`)
+  /// has no effect on cleaning up the device token.
+  ///
+  /// This is used as an example to allow you to set string-based
+  /// device tokens, which is the use case when integrating with
+  /// Firebase Cloud Messaging (FCM).
+  ///
+  /// This plugin currently does not support Apple Push Notification service (APNs)
+  /// tokens, which are binary structures.
+  ///
+  /// Aside from this special use case, any other context property that needs
+  /// to be defined (or re-defined) can be done.
+  Segment.setContext({
+    'device': {
+      'token': 'testing',
+    }
+  });
+
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-
-  @override
-  void initState() {
-    super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await SegmentFlutter.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-  }
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Segment.screen(
+      screenName: 'Example Screen',
+    );
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: Text('Segment example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Column(
+          children: <Widget>[
+            Spacer(),
+            Center(
+              child: FlatButton(
+                child: Text('TRACK ACTION WITH SEGMENT'),
+                onPressed: () {
+                  Segment.track(
+                    eventName: 'ButtonClicked',
+                    properties: {
+                      'foo': 'bar',
+                      'number': 1337,
+                      'clicked': true,
+                    },
+                  );
+                },
+              ),
+            ),
+            Spacer(),
+            Center(
+              child: FlatButton(
+                child: Text('Update Context'),
+                onPressed: () {
+                  Segment.setContext({'custom': 123});
+                },
+              ),
+            ),
+            Spacer(),
+            Center(
+              child: FlatButton(
+                child: Text('Clear Context'),
+                onPressed: () {
+                  Segment.setContext({});
+                },
+              ),
+            ),
+            Spacer(),
+            Center(
+              child: FlatButton(
+                child: Text('Disable'),
+                onPressed: () async {
+                  await Segment.disable();
+                  Segment.track(eventName: 'This event will not be logged');
+                },
+              ),
+            ),
+            Spacer(),
+            Center(
+              child: FlatButton(
+                child: Text('Enable'),
+                onPressed: () async {
+                  await Segment.enable();
+                  Segment.track(eventName: 'Enabled tracking events!');
+                },
+              ),
+            ),
+            Spacer(),
+            Platform.isIOS
+                ? Center(
+                    child: FlatButton(
+                      child: Text('Debug mode'),
+                      onPressed: () {
+                        Segment.debug(true);
+                      },
+                    ),
+                  )
+                : Container(),
+            Spacer(),
+          ],
         ),
       ),
+      navigatorObservers: [
+        SegmentObserver(),
+      ],
     );
   }
 }
