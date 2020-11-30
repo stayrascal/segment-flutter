@@ -39,7 +39,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
   /** Plugin registration. */
   public static void registerWith(PluginRegistry.Registrar registrar) {
-    final FlutterSegmentPlugin instance = new FlutterSegmentPlugin();
+    final SegmentFlutterPlugin instance = new SegmentFlutterPlugin();
     instance.setupChannels(registrar.context(), registrar.messenger());
   }
 
@@ -95,7 +95,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
               BasePayload payload = chain.payload();
               Map<String, Object> originalContext = new LinkedHashMap<>(payload.context());
-              Map<String, Object> mergedContext = FlutterSegmentPlugin.deepMerge(
+              Map<String, Object> mergedContext = SegmentFlutterPlugin.deepMerge(
                 originalContext,
                 appendToContextMiddleware
               );
@@ -106,7 +106,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
               chain.proceed(newPayload);
             } catch (Exception e) {
-              Log.e("FlutterSegment", e.getMessage());
+              Log.e("SegmentFlutter", e.getMessage());
               chain.proceed(chain.payload());
             }
           }
@@ -120,12 +120,12 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       try {
         Analytics.setSingletonInstance(analyticsBuilder.build());
       } catch (IllegalStateException e) {
-        Log.w("FlutterSegment", e.getMessage());
+        Log.w("SegmentFlutter", e.getMessage());
       }
       // register the channel to receive calls
       methodChannel.setMethodCallHandler(this);
     } catch (Exception e) {
-      Log.e("FlutterSegment", e.getMessage());
+      Log.e("SegmentFlutter", e.getMessage());
     }
   }
 
@@ -167,7 +167,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       this.callIdentify(userId, traitsData, options);
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -196,7 +196,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       this.callTrack(eventName, propertiesData, options);
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -225,7 +225,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       this.callScreen(screenName, propertiesData, options);
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -254,7 +254,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       this.callGroup(groupId, traitsData, options);
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -283,7 +283,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       Analytics.with(this.applicationContext).alias(alias, options);
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -292,7 +292,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       String anonymousId = Analytics.with(this.applicationContext).getAnalyticsContext().traits().anonymousId();
       result.success(anonymousId);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -301,7 +301,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       Analytics.with(this.applicationContext).reset();
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -310,7 +310,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       this.appendToContextMiddleware = call.argument("context");
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -321,7 +321,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       Analytics.with(this.applicationContext).optOut(false);
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 
@@ -332,7 +332,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       Analytics.with(this.applicationContext).optOut(true);
       result.success(true);
     } catch (Exception e) {
-      result.error("FlutterSegmentException", e.getLocalizedMessage(), null);
+      result.error("SegmentFlutterException", e.getLocalizedMessage(), null);
     }
   }
 

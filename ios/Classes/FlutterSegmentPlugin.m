@@ -2,7 +2,7 @@
 #import <Analytics/SEGAnalytics.h>
 #import <Analytics/SEGContext.h>
 #import <Analytics/SEGMiddleware.h>
-#import <Segment_Amplitude/SEGAmplitudeIntegrationFactory.h>
+// #import <Segment_Amplitude/SEGAmplitudeIntegrationFactory.h>
 
 @implementation SegmentFlutterPlugin
 // Contents to be appended to the context
@@ -17,8 +17,8 @@ static NSDictionary *_appendToContextMiddleware;
     BOOL recordScreenView = [[dict objectForKey: @"com.claimsforce.segment.RECORD_SCREEN_VIEW"] boolValue];
     BOOL trackPushNotification = [[dict objectForKey: @"com.claimsforce.segment.TRACK_PUSH_NOTIFICATION"] boolValue];
     BOOL trackDeepLink = [[dict objectForKey: @"com.claimsforce.segment.TRACK_DEEP_LINKS"] boolValue];
-    // BOOL enableAdvertisingTracking = [[dict objectForKey: @"com.claimsforce.segment.ENABLE_ADVERTISING_TRACKING"] boolValue];
-    BOOL isAmplitudeIntegrationEnabled = [[dict objectForKey: @"com.claimsforce.segment.ENABLE_AMPLITUDE_INTEGRATION"] boolValue];
+    BOOL enableAdvertisingTracking = [[dict objectForKey: @"com.claimsforce.segment.ENABLE_ADVERTISING_TRACKING"] boolValue];
+    // BOOL isAmplitudeIntegrationEnabled = [[dict objectForKey: @"com.claimsforce.segment.ENABLE_AMPLITUDE_INTEGRATION"] boolValue];
     SEGAnalyticsConfiguration *configuration = [SEGAnalyticsConfiguration configurationWithWriteKey:writeKey];
 
     // This middleware is responsible for manipulating only the context part of the request,
@@ -106,24 +106,24 @@ static NSDictionary *_appendToContextMiddleware;
     ];
 
     configuration.trackApplicationLifecycleEvents = trackApplicationLifecycleEvents;
-    configuration.recordScreenView = recordScreenView;
+    configuration.recordScreenViews = recordScreenView;
     configuration.trackPushNotifications = trackPushNotification;
     configuration.trackDeepLinks = trackDeepLink;
     configuration.enableAdvertisingTracking = enableAdvertisingTracking;
 
-    if (isAmplitudeIntegrationEnabled) {
-      [configuration use:[SEGAmplitudeIntegrationFactory instance]];
-    }
+    // if (isAmplitudeIntegrationEnabled) {
+    //   [configuration use:[SEGAmplitudeIntegrationFactory instance]];
+    // }
 
-    if (enableAdvertisingTracking) {
-        configuration.adSupportBlock = ^{
-            return [[ASIdentifierManager sharedManager] advertisingIdentifier];
-        }
-    }
+    // if (enableAdvertisingTracking) {
+    //     configuration.adSupportBlock = ^{
+    //         return [[ASIdentifierManager sharedManager] advertisingIdentifier];
+    //     }
+    // }
 
     [SEGAnalytics setupWithConfiguration:configuration];
     FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"flutter_segment"
+      methodChannelWithName:@"segment_flutter"
       binaryMessenger:[registrar messenger]];
     SegmentFlutterPlugin* instance = [[SegmentFlutterPlugin alloc] init];
     [registrar addMethodCallDelegate:instance channel:channel];

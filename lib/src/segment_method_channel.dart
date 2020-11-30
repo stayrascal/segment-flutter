@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:segment_flutter/src/segment_default_options.dart';
 import 'package:segment_flutter/src/segment_platform_interface.dart';
 
-const MethodChannel _channel = MethodChannel('flutter_segment');
+const MethodChannel _channel = MethodChannel('segment_flutter');
 
 class SegmentMethodChannel extends SegmentPlatform {
   Future<void> identify({
