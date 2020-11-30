@@ -15,12 +15,12 @@ import com.segment.analytics.Traits;
 import com.segment.analytics.Options;
 import com.segment.analytics.Middleware;
 import com.segment.analytics.integrations.BasePayload;
-import com.segment.analytics.android.integrations.amplitude.AmplitudeIntegration;
 import static com.segment.analytics.Analytics.LogLevel;
 
 import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
@@ -59,26 +59,35 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
       Bundle bundle = ai.metaData;
 
       String writeKey = bundle.getString("com.claimsforce.segment.WRITE_KEY");
-      Boolean trackApplicationLifecycleEvents = bundle.getBoolean("com.claimsforce.segment.TRACK_APPLICATION_LIFECYCLE_EVENTS");
-      Boolean isAmplitudeIntegrationEnabled = bundle.getBoolean("com.claimsforce.segment.ENABLE_AMPLITUDE_INTEGRATION", false);
-      Boolean recordScreenView = bundle.getBoolean("com.claimsforce.segment.RECORD_SCREEN_VIEW", false);
-      Boolean trackPushNotification = bundle.getBoolean("com.claimsforce.segment.TRACK_PUSH_NOTIFICATION", false);
-      Boolean trackDeepLink = bundle.getBoolean("com.claimsforce.segment.TRACK_DEEP_LINKS", false);
-      Boolean enableAdvertisingTracking = bundle.getBoolean("com.claimsforce.segment.ENABLE_ADVERTISING_TRACKING", false);
-      Boolean debug = bundle.getBoolean("com.claimsforce.segment.DEBUG", false);
+      boolean trackApplicationLifecycleEvents = bundle.getBoolean("com.claimsforce.segment.TRACK_APPLICATION_LIFECYCLE_EVENTS", false);
+      boolean recordScreenView = bundle.getBoolean("com.claimsforce.segment.RECORD_SCREEN_VIEW", false);
+      boolean trackDeepLink = bundle.getBoolean("com.claimsforce.segment.TRACK_DEEP_LINKS", false);
+      boolean debug = bundle.getBoolean("com.claimsforce.segment.DEBUG", false);
+      int flushQueueSize = bundle.getInt("com.claimsforce.segment.FLUSH_QUEUE_SIZE", 20);
+      long flushQueueInterval = bundle.getLong("com.claimsforce.segment.FLUSH_QUEUE_INTERVAL", 30000);
 
-      Analytics.Builder analyticsBuilder = new Analytics.Builder(applicationContext, writeKey);
+      Boolean trackPushNotification = bundle.getBoolean("com.claimsforce.segment.TRACK_PUSH_NOTIFICATION", false);
+      Boolean enableAdvertisingTracking = bundle.getBoolean("com.claimsforce.segment.ENABLE_ADVERTISING_TRACKING", false);
+
+
+      Analytics.Builder analyticsBuilder = new Analytics.Builder(applicationContext, writeKey)
+              .flushQueueSize(flushQueueSize)
+              .flushInterval(flushQueueInterval, TimeUnit.MILLISECONDS);
+
       if (trackApplicationLifecycleEvents) {
-        // Enable this to record certain application events automatically
-        analyticsBuilder.trackApplicationLifecycleEvents();
+        analyticsBuilder = analyticsBuilder.trackApplicationLifecycleEvents();
       }
 
       if (debug) {
-        analyticsBuilder.logLevel(LogLevel.DEBUG);
+        analyticsBuilder = analyticsBuilder.logLevel(LogLevel.DEBUG);
       }
 
-      if (isAmplitudeIntegrationEnabled) {
-        analyticsBuilder.use(AmplitudeIntegration.FACTORY);
+      if (recordScreenView) {
+        analyticsBuilder = analyticsBuilder.recordScreenViews();
+      }
+
+      if (trackDeepLink) {
+        analyticsBuilder = analyticsBuilder.trackDeepLinks();
       }
 
       // Here we build a middleware that just appends data to the current context

@@ -1,3 +1,6 @@
+## 0.0.7
+* Update flush configuration
+
 ## 0.0.6
 * change name from flutter_segment to segment_flutter
 

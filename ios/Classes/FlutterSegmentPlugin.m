@@ -2,7 +2,6 @@
 #import <Analytics/SEGAnalytics.h>
 #import <Analytics/SEGContext.h>
 #import <Analytics/SEGMiddleware.h>
-// #import <Segment_Amplitude/SEGAmplitudeIntegrationFactory.h>
 
 @implementation SegmentFlutterPlugin
 // Contents to be appended to the context
@@ -18,7 +17,9 @@ static NSDictionary *_appendToContextMiddleware;
     BOOL trackPushNotification = [[dict objectForKey: @"com.claimsforce.segment.TRACK_PUSH_NOTIFICATION"] boolValue];
     BOOL trackDeepLink = [[dict objectForKey: @"com.claimsforce.segment.TRACK_DEEP_LINKS"] boolValue];
     BOOL enableAdvertisingTracking = [[dict objectForKey: @"com.claimsforce.segment.ENABLE_ADVERTISING_TRACKING"] boolValue];
-    // BOOL isAmplitudeIntegrationEnabled = [[dict objectForKey: @"com.claimsforce.segment.ENABLE_AMPLITUDE_INTEGRATION"] boolValue];
+    NSUInteger maxQueueSize = [[dict objectForKey: @"com.claimsforce.segment.MAX_QUEUE_SIZE"] unsignedIntegerValue];
+    NSUInteger flushAt = [[dict objectForKey: @"com.claimsforce.segment.FLUSH_QUEUE_SIZE"] unsignedIntegerValue];
+    NSTimeInterval flushInterval = [[dict objectForKey: @"com.claimsforce.segment.FLUSH_QUEUE_SIZE"] timeInterval];
     SEGAnalyticsConfiguration *configuration = [SEGAnalyticsConfiguration configurationWithWriteKey:writeKey];
 
     // This middleware is responsible for manipulating only the context part of the request,
@@ -110,10 +111,10 @@ static NSDictionary *_appendToContextMiddleware;
     configuration.trackPushNotifications = trackPushNotification;
     configuration.trackDeepLinks = trackDeepLink;
     configuration.enableAdvertisingTracking = enableAdvertisingTracking;
+    configuration.flushAt = flushAt;
+    configuration.flushInterval = flushInterval;
+    configuration.maxQueueSize = maxQueueSize;
 
-    // if (isAmplitudeIntegrationEnabled) {
-    //   [configuration use:[SEGAmplitudeIntegrationFactory instance]];
-    // }
 
     // if (enableAdvertisingTracking) {
     //     configuration.adSupportBlock = ^{

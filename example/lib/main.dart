@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:segment_flutter/segment_flutter_test.dart';
+import 'package:segment_flutter/segment_flutter.dart';
 
 void main() {
   /// Wait until the platform channel is properly initialized so we can call
