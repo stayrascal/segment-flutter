@@ -1,3 +1,6 @@
+## 0.0.8
+* Remove flush configuration
+
 ## 0.0.7
 * Update flush configuration
 
